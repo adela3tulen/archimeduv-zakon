@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archimédův zákon ✨</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Space+Grotesk:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink: #ff4d8d;
+            --purple: #a259ff;
+            --cyan: #00e5ff;
+            --yellow: #ffe033;
+            --dark: #0d0d1a;
+            --card: #16162a;
+            --card2: #1e1e35;
+            --text: #f0eaff;
+            --muted: #8888aa;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(162, 89, 255, 0.18) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 77, 141, 0.15) 0%, transparent 70%);
+            bottom: 0;
+            right: -80px;
+            pointer-events: none;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 2rem 1.5rem;
+            max-width: 100%;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.3rem 1rem;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 0%, var(--cyan) 60%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        .feed {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 1.2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 1.8rem 1.6rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .card.pink::before {
+            background: linear-gradient(90deg, var(--pink), var(--purple));
+        }
+
+        .card.cyan::before {
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+        }
+
+        .card.yellow::before {
+            background: linear-gradient(90deg, var(--yellow), var(--pink));
+        }
+
+        .card.green::before {
+            background: linear-gradient(90deg, #00ffaa, var(--cyan));
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+            opacity: 0.6;
+        }
+
+        .card.pink .card-tag {
+            color: var(--pink);
+        }
+
+        .card.cyan .card-tag {
+            color: var(--cyan);
+        }
+
+        .card.yellow .card-tag {
+            color: var(--yellow);
+        }
+
+        .card.green .card-tag {
+            color: #00ffaa;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #ccc0ee;
+        }
+
+        .card p strong {
+            color: white;
+            font-weight: 700;
+        }
+
+        .emoji-big {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            line-height: 1;
+        }
+
+        .formula-box {
+            background: var(--card2);
+            border: 1px solid rgba(162, 89, 255, 0.3);
+            border-radius: 14px;
+            padding: 1.2rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .formula-box .formula {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 1.4rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .formula-box .formula-desc {
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .tub-section {
+            text-align: center;
+        }
+
+        .object-btn-row {
+            display: flex;
+            gap: 0.6rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .obj-btn {
+            background: var(--card2);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .obj-btn:hover,
+        .obj-btn.active {
+            border-color: var(--cyan);
+            background: rgba(0, 229, 255, 0.1);
+            color: var(--cyan);
+        }
+
+        .tub-result {
+            margin-top: 1rem;
+            min-height: 2.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--cyan);
+            transition: opacity 0.3s;
+        }
+
+        .quiz-q {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .quiz-opt {
+            background: var(--card2);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.75rem 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .quiz-opt:hover {
+            border-color: var(--purple);
+            background: rgba(162, 89, 255, 0.1);
+        }
+
+        .quiz-opt.correct {
+            border-color: #00ffaa;
+            background: rgba(0, 255, 170, 0.12);
+            color: #00ffaa;
+        }
+
+        .quiz-opt.wrong {
+            border-color: var(--pink);
+            background: rgba(255, 77, 141, 0.1);
+            color: var(--pink);
+        }
+
+        .quiz-feedback {
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            min-height: 1.5rem;
+            font-weight: 700;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .example-item {
+            background: var(--card2);
+            border-radius: 14px;
+            padding: 1rem 0.9rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .example-item .ex-emoji {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .example-item .ex-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .example-item .ex-why {
+            font-size: 0.72rem;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .scroll-hint {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="badge">fyzika pro každého ✨</div>
+        <h1>Archimédův zákon</h1>
+        <p class="subtitle">Proč věci plavou? Proč potápěj lodě? No, to ti vysvětlím... a bude to lowkey cool.</p>
+    </header>
+
+    <div class="feed">
+
+        <p class="scroll-hint">↓ scrolluj dolů ↓</p>
+
+        <div class="card pink">
+            <div class="card-tag">#pov</div>
+            <span class="emoji-big">🛁</span>
+            <h2>Archimédova "aha" moment</h2>
+            <p>Archimédés si jednou lehal do vany a všiml si, že voda přetekla. <strong>Byl tak nadšený, že vyběhl na
+                    ulici v plavkách a křičel "HEURÉKA!"</strong> (tj. "Našel jsem to!"). No, asi trochu cringe, ale ten
+                objev byl naprosto iconic. 💅</p>
+        </div>
+
+        <div class="card cyan">
+            <div class="card-tag">#pointa</div>
+            <span class="emoji-big">💡</span>
+            <h2>Co vlastně zjistil?</h2>
+            <p>Každý předmět ponořený do kapaliny je <strong>nadlehčován silou</strong>, která se rovná tíze kapaliny,
+                kterou vytlačil. Zkrátka: voda tě "tlačí nahoru" silou rovnou tomu, kolik vody "zabrala" tvoje tělo.</p>
+            <div class="formula-box">
+                <div class="formula">F = ρ · g · V</div>
+                <div class="formula-desc">
+                    <strong>F</strong> = vztlaková síla (Newton) &nbsp;|&nbsp;
+                    <strong>ρ</strong> = hustota kapaliny &nbsp;|&nbsp;
+                    <strong>g</strong> = tíhové zrychlení (9,81) &nbsp;|&nbsp;
+                    <strong>V</strong> = objem ponořeného tělesa
+                </div>
+            </div>
+            <p>Nepanic — je to jednodušší než to vypadá. 😌</p>
+        </div>
+
+        <div class="card yellow tub-section">
+            <div class="card-tag">#zkus to sama</div>
+            <h2>Hodíš to do vody... plave nebo ne?</h2>
+
+            <svg width="280" height="160" viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg"
+                style="display:block;margin:1.5rem auto 0">
+                <rect x="20" y="50" width="240" height="95" rx="14" fill="#1e1e35" stroke="rgba(255,255,255,0.12)"
+                    stroke-width="1.5" />
+                <clipPath id="tubClip">
+                    <rect x="22" y="52" width="236" height="91" rx="12" />
+                </clipPath>
+                <g clip-path="url(#tubClip)">
+                    <rect id="waterRect" x="22" y="90" width="236" height="55" fill="rgba(0,229,255,0.22)" />
+                    <path id="wavePath"
+                        d="M22,90 Q52,84 82,90 Q112,96 142,90 Q172,84 202,90 Q232,96 258,90 L258,92 Q232,98 202,92 Q172,86 142,92 Q112,98 82,92 Q52,86 22,92 Z"
+                        fill="rgba(0,229,255,0.5)" />
+                </g>
+                <rect x="40" y="143" width="12" height="14" rx="4" fill="#16162a" stroke="rgba(255,255,255,0.1)"
+                    stroke-width="1" />
+                <rect x="228" y="143" width="12" height="14" rx="4" fill="#16162a" stroke="rgba(255,255,255,0.1)"
+                    stroke-width="1" />
+                <g id="objectGroup" transform="translate(140,106)">
+                    <text id="objectEmoji" text-anchor="middle" dominant-baseline="middle" font-size="36">🪨</text>
+                </g>
+                <g id="arrowUp" opacity="0">
+                    <line x1="140" y1="95" x2="140" y2="75" stroke="#00ffaa" stroke-width="2.5"
+                        stroke-dasharray="4,2" />
+                    <polygon points="140,70 135,78 145,78" fill="#00ffaa" />
+                    <text x="148" y="85" fill="#00ffaa" font-size="9" font-family="Nunito,sans-serif">vztlak</text>
+                </g>
+            </svg>
+
+            <div class="object-btn-row">
+                <button class="obj-btn active"
+                    onclick="setObject(this,'🪨',false,'Kámen má hustotu ~2700 kg/m³ — víc než voda (1000). Klesne ke dnu. 💀')">🪨
+                    kámen</button>
+                <button class="obj-btn"
+                    onclick="setObject(this,'🪵',true,'Dřevo je lehčí než voda, hustota ~500 kg/m³. Pluje. Iconic. 🌊')">🪵
+                    dřevo</button>
+                <button class="obj-btn"
+                    onclick="setObject(this,'🛢️',false,'Samotná železná tyč klesne. Hustota ~7800 kg/m³. GG. ⚓')">🛢️
+                    železo</button>
+                <button class="obj-btn"
+                    onclick="setObject(this,'🛳️',true,'Loď je dutá = má velký objem, ale malou průměrnou hustotu. Proto pluje! Mind blown? 🤯')">🛳️
+                    loď</button>
+                <button class="obj-btn"
+                    onclick="setObject(this,'🍊',true,'Kůra pomeranče je plná vzduchu = pluje. Oloupej ho a potopí se. Srsly, zkus to.')">🍊
+                    pomeranč</button>
+            </div>
+
+            <div class="tub-result" id="tubResult">Kámen? No, ten fakt plavat nebude... 🪨</div>
+        </div>
+
+        <div class="card green">
+            <div class="card-tag">#mindblown</div>
+            <span class="emoji-big">🚢</span>
+            <h2>Proč plave 100 000 tunová loď?</h2>
+            <p>Protože <strong>hustota celé lodi</strong> (i s tím vzduchem uvnitř) je menší než hustota vody. Loď
+                "vystrčí" hodně vody a ta ji tlačí nahoru silou dost velkou, aby ji udržela nad hladinou.</p>
+            <p style="margin-top:0.8rem;">Ale stačí udělat díru a loď se začne plnit vodou → průměrná hustota roste →
+                loď klesá. <strong>Přesně proto Titanic sunk. No cap.</strong> 🧊</p>
+        </div>
+
+        <div class="card pink">
+            <div class="card-tag">#in real life</div>
+            <span class="emoji-big">🌍</span>
+            <h2>Kde to vidíš každý den</h2>
+            <div class="example-grid">
+                <div class="example-item">
+                    <span class="ex-emoji">🏊‍♀️</span>
+                    <div class="ex-name">Plavání</div>
+                    <div class="ex-why">Lidské tělo má hustotu ~985 kg/m³ — skoro jako voda. Proto "skoro" plaveš i bez
+                        pohybu.</div>
+                </div>
+                <div class="example-item">
+                    <span class="ex-emoji">🎈</span>
+                    <div class="ex-name">Balónek</div>
+                    <div class="ex-why">Hélium je lehčí než vzduch → vzduch ho tlačí nahoru. Stejný princip, jen ve
+                        vzduchu!</div>
+                </div>
+                <div class="example-item">
+                    <span class="ex-emoji">🧂</span>
+                    <div class="ex-name">Mrtvé moře</div>
+                    <div class="ex-why">Slaná voda je hustší než sladká → vztlak je větší → plaveš i bez snahy.
+                        Absolutně slay.</div>
+                </div>
+                <div class="example-item">
+                    <span class="ex-emoji">🐟</span>
+                    <div class="ex-name">Ryby</div>
+                    <div class="ex-why">Mají plovací měchýř — nafukují ho nebo vyfukují, tím mění hustotu a "nastavují"
+                        hloubku.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card cyan">
+            <div class="card-tag">#quiz time 🎯</div>
+            <h2>Víš to nebo ne?</h2>
+
+            <div style="margin-bottom:1.5rem">
+                <div class="quiz-q">1. Proč plavou dřevěné lodě, ale kovové tyče klesají?</div>
+                <div class="quiz-options">
+                    <button class="quiz-opt" onclick="answer(this,'q1',false)">Dřevo je magické</button>
+                    <button class="quiz-opt" onclick="answer(this,'q1',true)">Záleží na průměrné hustotě celého
+                        předmětu, ne jen materiálu</button>
+                    <button class="quiz-opt" onclick="answer(this,'q1',false)">Kovy jsou příliš těžké na to, aby je voda
+                        udržela</button>
+                </div>
+                <div class="quiz-feedback" id="fb-q1"></div>
+            </div>
+
+            <div>
+                <div class="quiz-q">2. Co se stane se vztlakem, když jdeš z bazénu do Mrtvého moře?</div>
+                <div class="quiz-options">
+                    <button class="quiz-opt" onclick="answer(this,'q2',false)">Zůstane stejný, voda je voda</button>
+                    <button class="quiz-opt" onclick="answer(this,'q2',false)">Zmenší se, sůl je těžká</button>
+                    <button class="quiz-opt" onclick="answer(this,'q2',true)">Zvětší se, protože slaná voda je
+                        hustší</button>
+                </div>
+                <div class="quiz-feedback" id="fb-q2"></div>
+            </div>
+        </div>
+
+        <div class="card yellow">
+            <div class="card-tag">#tldr</div>
+            <span class="emoji-big">🧠</span>
+            <h2>TLDR pro zkoušení</h2>
+            <p>📌 <strong>Vztlaková síla</strong> = tíha vytlačené kapaliny</p>
+            <p style="margin-top:0.5rem;">📌 Předmět <strong>pluje</strong>, pokud je jeho průměrná hustota
+                <strong>menší</strong> než hustota kapaliny</p>
+            <p style="margin-top:0.5rem;">📌 Předmět <strong>klesá</strong>, pokud je jeho průměrná hustota
+                <strong>větší</strong></p>
+            <p style="margin-top:0.5rem;">📌 <strong>F = ρgV</strong> — vzorec, který ti dá full marks na písemce 💯</p>
+            <p style="margin-top:1rem; color: var(--muted); font-size:0.85rem;">A pokud ti někdo říká, že fyzika je
+                boring — ukaž jim Titanic a řekni jim, že to byl čistě Archimédův zákon. 😤</p>
+        </div>
+
+    </div>
+
+    <footer>fyzika je slay • archimédův zákon • 7. třída ✨</footer>
+
+    <script>
+        function setObject(btn, emoji, floats, msg) {
+            document.querySelectorAll('.obj-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('objectEmoji').textContent = emoji;
+            const arrowUp = document.getElementById('arrowUp');
+            const waterRect = document.getElementById('waterRect');
+            if (floats) {
+                document.getElementById('objectGroup').setAttribute('transform', 'translate(140,62)');
+                waterRect.setAttribute('y', '95');
+                arrowUp.setAttribute('opacity', '1');
+            } else {
+                document.getElementById('objectGroup').setAttribute('transform', 'translate(140,106)');
+                waterRect.setAttribute('y', '88');
+                arrowUp.setAttribute('opacity', '0');
+            }
+            const result = document.getElementById('tubResult');
+            result.style.opacity = '0';
+            setTimeout(() => { result.textContent = msg; result.style.opacity = '1'; }, 200);
+        }
+
+        const feedback = {
+            q1: { correct: "Správně! 🎉 Loď je dutá → obří objem → malá průměrná hustota. Genius.", wrong: "Hmm, ne. Tip: co kdybys vzala železo a udělala z něj dutý box? 🤔" },
+            q2: { correct: "Yes girlie! 🌊 Hustší voda = větší vztlak = plaveš bez námahy.", wrong: "Ne tak úplně. Hustější kapalina = větší vztlak. Fyzika > intuice. 💅" }
+        };
+
+        function answer(btn, qid, correct) {
+            btn.parentElement.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
+            btn.classList.add(correct ? 'correct' : 'wrong');
+            const fb = document.getElementById('fb-' + qid);
+            fb.style.color = correct ? '#00ffaa' : 'var(--pink)';
+            fb.textContent = correct ? feedback[qid].correct : feedback[qid].wrong;
+        }
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.card').forEach(c => observer.observe(c));
+        } else {
+            document.querySelectorAll('.card').forEach(c => { c.style.opacity = '1'; c.style.transform = 'translateY(0)'; });
+        }
+    </script>
+</body>
+
+</html>
